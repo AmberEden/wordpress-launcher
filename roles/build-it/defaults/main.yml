@@ -1,0 +1,35 @@
+---
+apache_listen_ip: "*"
+apache_listen_port: 80
+apache_listen_port_ssl: 443
+
+apache_create_vhosts: true
+apache_vhosts_filename: "vhosts.conf"
+apache_vhosts_template: "vhosts.conf.j2"
+
+apache_global_vhost_settings: |
+  DirectoryIndex index.php index.html
+
+apache_vhosts:
+  # Additional properties:
+  # 'serveradmin, serveralias, allow_override, options, extra_parameters'.
+  - servername: "demo.com"
+    documentroot: "/var/www/vhosts/demo.com"
+    wpversion: "5.4.2"
+
+apache_allow_override: "All"
+apache_options: "-Indexes"
+
+apache_vhosts_ssl: []
+# Additional properties:
+# 'serveradmin, serveralias, allow_override, options, extra_parameters'.
+# - servername: "demo.com",
+#   documentroot: "/var/www/vhosts/demo.com",
+#   certificate_file: "/path/to/certificate.crt",
+#   certificate_key_file: "/path/to/certificate.key",
+#   certificate_chain_file: "/path/to/certificate_chain.crt"
+
+apache_ignore_missing_ssl_certificate: true
+
+apache_ssl_protocol: "All -SSLv2 -SSLv3 -TLSv1"
+apache_ssl_cipher_suite: "AES256+EECDH:AES256+EDH"

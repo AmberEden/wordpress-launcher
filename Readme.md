@@ -1,0 +1,1 @@
+Blank wordpress install running wordpress 5.3, php7.1 and apache / mysql.

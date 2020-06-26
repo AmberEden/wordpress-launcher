@@ -1,0 +1,44 @@
+
+#Task to install php packages
+---
+
+- name: Install PHP Packages
+  yum:
+    name: 
+    - php
+    - php-common
+    - php-cli
+    - php-fpm
+    - php-pgsql
+    - php-mysqlnd
+    - php-gd
+    - php-bz2
+    - php-zip
+    - php-json
+    - php-xml
+    - php-curl
+    - php-intl
+    - php-mbstring
+    - php-mcrypt
+    - php-soap
+    - php-opcache
+    - php-pdo
+# state: present
+
+- name: Set PHP memory limit to 256MB
+  lineinfile:
+    path: /etc/php.ini
+    regexp: '^memory_limit ='
+    line: memory_limit = 256M
+
+- name: Set PHP filesize limit to 20MB
+  lineinfile:
+    path: /etc/php.ini
+    regexp: '^upload_max_filesize ='
+    line: upload_max_filesize = 20M
+
+- name: Set PHP upload limit to 20MB
+  lineinfile:
+    path: /etc/php.ini
+    regexp: '^post_max_size ='
+    line: post_max_size = 20M

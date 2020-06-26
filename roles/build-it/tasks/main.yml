@@ -1,0 +1,11 @@
+---
+
+- include_tasks: epel.yml
+- include_tasks: setup.yml
+- include_tasks: base.yml
+- include_tasks: remi.yml
+- include_tasks: php.yml
+- include_tasks: mysql.yml
+- include_tasks: apache.yml
+- include_tasks: vhost.yml
+- include_tasks: sysctl.yml

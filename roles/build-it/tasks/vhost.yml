@@ -1,0 +1,61 @@
+--- 
+- name: Create and set ownership on vhost
+  file:
+    path: "{{ item.documentroot }}"
+    state: directory
+    owner: apache
+    group: apache
+    recurse: yes
+  with_items: "{{ apache_vhosts }}"
+
+- name: Create temporary download location
+  file:
+    path: "/tmp/wordpress-{{ item.wpversion }}"
+    state: directory
+    recurse: yes
+  with_items: "{{ apache_vhosts }}"
+  when: item.wpversion is defined
+
+- name: Download WordPress versions
+  get_url:
+    url: "https://en-gb.wordpress.org/wordpress-{{ item.wpversion }}-en_GB.zip"
+    dest: "/tmp/wordpress-{{ item.wpversion }}/wordpress-{{ item.wpversion }}-en_GB.zip"
+  with_items: "{{ apache_vhosts }}"
+  when: item.wpversion is defined
+
+- name: Unzip WordPress version to temporary location
+  unarchive:
+    remote_src: yes
+    src: "/tmp/wordpress-{{ item.wpversion }}/wordpress-{{ item.wpversion }}-en_GB.zip"
+    dest: "/tmp/wordpress-{{ item.wpversion }}/"
+    owner: apache
+    group: apache
+  with_items: "{{ apache_vhosts }}"
+  when: item.wpversion is defined
+
+- name: Copy WordPress base into documentroot
+  copy:
+    remote_src: yes
+    src: "/tmp/wordpress-{{ item.wpversion }}/wordpress/"
+    dest: "{{ item.documentroot }}/"
+    owner: apache 
+    group: apache
+#    compress: no
+#    rsync_opts:
+#      - "--ignore-existing"
+  with_items: "{{ apache_vhosts }}"
+  when: item.wpversion is defined
+
+- name: POST contents
+  uri:
+    url: "http://95.217.161.70/wp-admin/install.php?step=2"
+    method: POST
+    body_format: form-urlencoded
+    body:
+    - [ weblog_title, "{{WP_DOMAIN}}" ]
+    - [ user_name, "{{WP_ADMIN_USERNAME}}" ]
+    - [ admin_email, "{{WP_ADMIN_EMAIL}}" ]
+    - [ admin_password, "{{WP_ADMIN_PASSWORD}}" ]
+    - [ admin_password2, "{{WP_ADMIN_PASSWORD}}" ]
+    - [ pw_weak, 1 ]
+    - [ blog_public, 0 ]
